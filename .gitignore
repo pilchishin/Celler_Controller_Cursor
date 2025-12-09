@@ -1,0 +1,28 @@
+git# Build artifacts
+*.elf
+*.hex
+*.bin
+*.eep
+*.d
+*.o
+*.a
+
+# Arduino build dirs
+build*/
+.pio/
+.pioenvs/
+.piolibdeps/
+
+# VS Code / Cursor
+.vscode/
+.idea/
+.DS_Store
+*.log
+
+# PlatformIO
+.clang_complete
+.gcc-flags.json
+.pioenvs
+.piolibdeps
+
+
