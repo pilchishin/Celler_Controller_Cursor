@@ -1,4 +1,5 @@
 #include "menu.h"
+#include "utils.h"
 
 void Menu::begin(Display *disp, FSM *fsm, EepromStore *store, Config *cfg) {
   disp_ = disp;
