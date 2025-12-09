@@ -3,14 +3,14 @@
 #include <Arduino.h>
 
 // Общие настройки пинов, дефолтных параметров и структур конфигурации.
-
 // Pin map — сопоставление сигналов с пинами Nano.
-constexpr uint8_t PIN_SSR_FAN = 3;      // Digital, SSR for intake fan
-constexpr uint8_t PIN_SSR_OZONE = 4;    // Digital, SSR for ozonator
+
+constexpr uint8_t PIN_SSR_FAN = 3;        // Digital, SSR for intake fan
+constexpr uint8_t PIN_SSR_OZONE = 4;      // Digital, SSR for ozonator
 constexpr uint8_t PIN_BTN_MENU = 5;
 constexpr uint8_t PIN_BTN_UP = 6;
 constexpr uint8_t PIN_BTN_DOWN = 7;
-constexpr uint8_t PIN_ONEWIRE = 8;      // DS18B20 bus
+constexpr uint8_t PIN_ONEWIRE = 8;      //  DS18B20 bus
 
 // I2C addresses
 constexpr uint8_t I2C_LCD_ADDR = 0x27;
