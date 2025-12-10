@@ -9,6 +9,7 @@
 #include "display.h"
 #include "menu.h"
 #include "timer.h"
+#include "utils.h"
 
 // Глобальные экземпляры подсистем.
 Sensors sensors;
@@ -126,15 +127,15 @@ void loop() {
   // Наращиваем минуты работы для статистики.
   if (fanOn) {
     fanAccMs += delta;
-    while (fanAccMs >= 60'000) {
-      fanAccMs -= 60'000;
+    while (fanAccMs >= 60000) {
+      fanAccMs -= 60000;
       stats.fanMinutes++;
     }
   }
   if (ozOn) {
     ozoneAccMs += delta;
-    while (ozoneAccMs >= 60'000) {
-      ozoneAccMs -= 60'000;
+    while (ozoneAccMs >= 60000) {
+      ozoneAccMs -= 60000;
       stats.ozoneMinutes++;
     }
   }

@@ -17,9 +17,9 @@ constexpr uint8_t I2C_LCD_ADDR = 0x27;
 constexpr uint8_t I2C_BME280_ADDR = 0x76;
 
 // Timing — интервалы опроса и вспомогательные таймауты.
-constexpr uint32_t SENSOR_PERIOD_MS = 10'000;   // 10 s
+constexpr uint32_t SENSOR_PERIOD_MS = 10000;   // 10 s
 constexpr uint32_t UI_TICK_MS = 250;
-constexpr uint32_t BACKLIGHT_TIMEOUT_MS = 60'000;
+constexpr uint32_t BACKLIGHT_TIMEOUT_MS = 60000;
 constexpr uint32_t STATS_SNAPSHOT_MS = 30UL * 60UL * 1000UL; // 30 min
 constexpr uint32_t LOOP_BUDGET_MS = 500;
 
@@ -40,7 +40,7 @@ constexpr uint8_t OZONE_RETRY_MIN = 30;
 
 // Menu — параметры кнопок.
 constexpr uint8_t MENU_DEBOUNCE_MS = 80;
-constexpr uint8_t MENU_LONGPRESS_MS = 800;
+constexpr uint16_t MENU_LONGPRESS_MS = 800;
 
 // EEPROM layout — размеры wear-level блока и смещение статистики.
 constexpr size_t EEPROM_CFG_SLOT_SIZE = 64;
@@ -94,8 +94,10 @@ struct Stats {
 };
 
 struct EventEntry {
-  uint8_t code{0};
-  uint32_t ts{0};
+  uint8_t code = 0;
+  uint32_t ts = 0;
+  EventEntry() = default;
+  EventEntry(uint8_t c, uint32_t t) : code(c), ts(t) {}
 };
 
 constexpr uint8_t EVENT_LOG_SIZE = 20;
