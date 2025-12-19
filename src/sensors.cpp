@@ -29,7 +29,7 @@ bool Sensors::begin(const SensorOffsets &offsets) {
     if (rtc.lostPower()) rtcOk_.ok = false, ok = false;
   }
   // Первичное чтение для заполнения фильтров.
-  poll(0, offsets); // initial read
+  poll(0, offsets); // начальное чтение
   return ok;
 }
 
@@ -86,7 +86,7 @@ bool Sensors::readDs(const SensorOffsets &offsets) {
   }
   dsOk_.failures = 0;
   dsOk_.ok = true;
-  raw_.tin = (isnan(raw_.tin) ? t : raw_.tin); // BME primary, DS backup for safety
+  raw_.tin = (isnan(raw_.tin) ? t : raw_.tin); // BME основной, DS резервный для безопасности
   raw_.tin += offsets.ds18b20;
   return true;
 }

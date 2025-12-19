@@ -25,7 +25,7 @@ ClimateDecision ClimateController::evaluate(const FilteredReadings &f,
   // Запуск вентилятора — если превышение + улица суше + нет конденсата, не чаще 5 мин.
   bool canStart = (hot || humid) && outdoorHelps && !condensation;
   if (canStart) {
-    if (nowMs - lastOnMs_ > 300000UL) { // 5 min anti-chatter
+    if (nowMs - lastOnMs_ > 300000UL) { // 5 мин антидребезг
       fanLatched_ = true;
       lastOnMs_ = nowMs;
     }

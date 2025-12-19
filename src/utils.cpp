@@ -34,7 +34,7 @@ void RunningMedian3::push(float v) {
 // Возвращаем средний элемент отсортированной тройки.
 float RunningMedian3::median() const {
   float vals[3] = {a, b, c};
-  // Simple sort for three values
+  // Простая сортировка для трёх значений
   for (int i = 0; i < 3; ++i) {
     for (int j = i + 1; j < 3; ++j) {
       if (vals[j] < vals[i]) {

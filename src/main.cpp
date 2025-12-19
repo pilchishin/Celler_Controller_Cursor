@@ -64,18 +64,29 @@ void setup() {
 void handleButtons(uint32_t nowMs) {
   static uint32_t lastPress = 0;
   static uint8_t lastPin = 0;
+  static uint32_t lastDebounce = 0;
   uint8_t pins[3] = {PIN_BTN_MENU, PIN_BTN_UP, PIN_BTN_DOWN};
   // Простая обработка удержания: пока держим, через MENU_LONGPRESS считаем long.
   for (uint8_t p : pins) {
     if (buttonPressed(p)) {
       if (lastPin != p) {
-        lastPin = p;
-        lastPress = nowMs;
+        // Новое нажатие: проверить debounce
+        if (nowMs - lastDebounce >= MENU_DEBOUNCE_MS) {
+          lastDebounce = nowMs;
+          lastPin = p;
+          lastPress = nowMs;
+          menu.handleButton(p, false, nowMs);  // Новое нажатие, longP=false
+          fsm.setBacklight(true, nowMs);
+        }
       } else {
+        // Повторное: проверить longPress
         bool longP = (nowMs - lastPress) > MENU_LONGPRESS_MS;
         menu.handleButton(p, longP, nowMs);
         fsm.setBacklight(true, nowMs);
       }
+    } else if (lastPin == p) {
+      // Отпустили кнопку
+      lastPin = 0;
     }
   }
 }
@@ -94,7 +105,7 @@ void loop() {
 
   fsm.tick(nowMs, epoch, sensors, climate, ozone);
 
-  // scheduled ozone start check
+  // проверка запланированного запуска озона
   DateTime dt = rtc.now();
   if (cfg.ozone.enabled && dt.hour() == cfg.ozone.hour && dt.minute() == cfg.ozone.minute && dt.dayOfTheWeek() == cfg.ozone.weekday) {
     if (!ozone.status().running && ozone.status().state == OZ_IDLE && f.tout >= 0 && !fsm.backlightBlock()) {
@@ -105,23 +116,23 @@ void loop() {
 
   ozone.tick(nowMs, f, fsm.backlightBlock(), f.tout >= 0);
 
-  // UI tick
+  // тик UI
   if (due(nowMs, sched.lastUi, UI_TICK_MS)) {
     menu.tick(nowMs, f, fsm.relayFan(), fsm.relayOzone());
   }
 
-  // Stats snapshot
+  // снимок статистики
   if (due(nowMs, sched.lastStats, STATS_SNAPSHOT_MS)) {
     storage.saveStats(stats);
   }
 
-  // Apply relays
+  // применение реле
   bool fanOn = fsm.relayFan();
   bool ozOn = fsm.relayOzone();
   digitalWrite(PIN_SSR_FAN, fanOn);
   digitalWrite(PIN_SSR_OZONE, ozOn);
 
-  // runtime accumulation
+  // накопление времени работы
   uint32_t delta = nowMs - lastRuntimeMs;
   lastRuntimeMs = nowMs;
   // Наращиваем минуты работы для статистики.
@@ -142,7 +153,7 @@ void loop() {
 
   handleButtons(nowMs);
 
-  // loop pacing
+  // темп цикла
   if (millis() - nowMs < 5) {
     delay(5);
   }

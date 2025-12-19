@@ -3,7 +3,7 @@
 #include "eeprom.h"
 #include "utils.h"
 
-// Helper functions to read/write EEPROM structures
+// Вспомогательные функции для чтения/записи структур EEPROM
 template<typename T>
 void eeprom_read(uint16_t addr, T &data) {
   eeprom_read_block(&data, (const void *)addr, sizeof(T));
@@ -47,7 +47,7 @@ Config EepromStore::loadConfig() {
   eeprom_read(slot * EEPROM_CFG_SLOT_SIZE, cfg);
   uint16_t crcCalc = crc16_bytes((uint8_t *)&cfg, sizeof(Config) - sizeof(uint16_t));
   if (crcCalc != cfg.crc) {
-    cfg = Config(); // defaults
+    cfg = Config(); // по умолчанию
   }
   return cfg;
 }

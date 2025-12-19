@@ -23,12 +23,12 @@ void FSM::tick(uint32_t nowMs, uint32_t epoch, Sensors &sensors, ClimateControll
   auto dec = climate.evaluate(f, sensors.bmeStatus(), sensors.htuStatus(), sensors.dsStatus(),
                               cfg_->targetTemp, cfg_->targetRh, nowMs);
 
-  // Backlight auto off
+  // автоматическое выключение подсветки
   if (backlightOn_ && (nowMs - backlightChanged_ > BACKLIGHT_TIMEOUT_MS)) {
     backlightOn_ = false;
   }
 
-  // Safety errors
+  // ошибки безопасности
   if (condensationRisk(f) || (!isnan(f.tin) && f.tin <= MIN_CELLAR_TEMP) ||
       !sensors.bmeStatus().ok || !sensors.htuStatus().ok || !sensors.dsStatus().ok || !sensors.rtcStatus().ok) {
     // Любая критическая проблема — в ERROR с обесточенными реле.
@@ -45,7 +45,7 @@ void FSM::tick(uint32_t nowMs, uint32_t epoch, Sensors &sensors, ClimateControll
     return;
   }
 
-  // Ozone state management
+  // управление состоянием озона
   handleOzoneTransitions(nowMs, epoch, f, sensors, ozone);
   if (ozone.status().running) {
     fanRelay_ = ozone.relayFan();
@@ -53,7 +53,7 @@ void FSM::tick(uint32_t nowMs, uint32_t epoch, Sensors &sensors, ClimateControll
     return;
   }
 
-  // Automatic climate
+  // автоматический климат
   if (state_ != ST_ERROR) {
     state_ = ST_AUTO;
     fanRelay_ = dec.fanShouldRun;
@@ -96,7 +96,7 @@ void FSM::requestManualOzone(uint16_t minutes, uint32_t nowMs) {
 void FSM::startScheduledOzone(uint32_t nowMs) {
   enter(ST_OZONE_START);
   manual_ = {};
-  // Actual start handled by caller to OzoneController
+  // Фактический запуск обрабатывается вызывающим кодом в OzoneController
 }
 
 void FSM::abortOzone() {
@@ -114,7 +114,7 @@ void FSM::handleManual(uint32_t nowMs) {
 }
 
 bool FSM::relayFan() const {
-  if (state_ == ST_MANUAL_OZONE) return true; // manual ozone requires vent after? keep fan on
+  if (state_ == ST_MANUAL_OZONE) return true; // ручной озон требует вентиляции после? держать вентилятор включенным
   return fanRelay_;
 }
 

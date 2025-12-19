@@ -17,11 +17,13 @@ void Menu::tick(uint32_t nowMs, const FilteredReadings &f, bool fanOn, bool ozOn
 }
 
 void Menu::handleButton(uint8_t btn, bool longPress, uint32_t nowMs) {
+  Serial.println("Processing button " + String(btn) + " longPress: " + String(longPress) + " at " + String(nowMs));
+
   backlight_ = true;
   // Простая матрица кнопок: Menu — перелистывание, long Menu — сброс статистики.
   if (btn == PIN_BTN_MENU) {
     if (longPress) {
-      // service: reset stats
+      // сервис: сброс статистики
       Stats st{};
       store_->saveStats(st);
     } else {
@@ -61,7 +63,7 @@ void Menu::render(const FilteredReadings &f, bool fanOn, bool ozOn) {
   } else if (page_ == PAGE_MANUAL_OZONE) {
     disp_->showError("Manual Ozone");
   } else if (page_ == PAGE_SETTINGS) {
-    // Simple settings view
+    // простое представление настроек
     disp_->showError("Settings");
   }
 }
